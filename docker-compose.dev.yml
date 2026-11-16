@@ -1,0 +1,62 @@
+# SovereignDoc Community Edition (v1.1.0-community) — Split Microservices / Development
+# Idea To Fact LLC -> AirGap Axis Platform -> SovereignDoc Community Edition
+#
+# DEVELOPMENT DEPLOYMENT: Split Backend & Frontend Containers
+# ------------------------------------------------------------
+# Launches separate backend (:8000) and frontend (:5173) services with Vite proxy.
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up -d
+#
+# Web UI: http://127.0.0.1:5173
+# Backend API: http://127.0.0.1:8000
+
+services:
+  backend:
+    image: airgapaxis/sovereigndoc-backend:1.1.0-community
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: sovereigndoc-backend
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      SOVEREIGNDOC_OLLAMA_URL: http://host.docker.internal:11434
+      SOVEREIGNDOC_HOST: 0.0.0.0
+      SOVEREIGNDOC_PORT: 8000
+      ANONYMIZED_TELEMETRY: "False"
+      CHROMA_TELEMETRY_IMPL: "none"
+      DO_NOT_TRACK: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      HF_HUB_OFFLINE: "1"
+    volumes:
+      - sovereigndoc_data:/root/.sovereigndoc
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - sovereigndoc_net
+    restart: unless-stopped
+
+  frontend:
+    image: airgapaxis/sovereigndoc-frontend:1.1.0-community
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: sovereigndoc-frontend
+    ports:
+      - "127.0.0.1:5173:5173"
+    environment:
+      VITE_API_PROXY_TARGET: http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - sovereigndoc_net
+    restart: unless-stopped
+
+networks:
+  sovereigndoc_net:
+    driver: bridge
+
+volumes:
+  sovereigndoc_data:

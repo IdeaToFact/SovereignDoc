@@ -1,0 +1,61 @@
+# SovereignDoc — Local Air-Gapped Backend Dockerfile (AGPLv3 Community Edition)
+FROM python:3.12-slim
+
+LABEL maintainer="Idea To Fact LLC <contact@ideatofact.com>" \
+      description="SovereignDoc Community Edition v1.1.0-community - Local-First AI Document Intelligence & Second Brain Backend" \
+      version="1.1.0-community" \
+      license="GNU AGPLv3" \
+      org.opencontainers.image.title="SovereignDoc Community Edition (Backend)" \
+      org.opencontainers.image.description="Local-First AI Document Intelligence & Second Brain Backend" \
+      org.opencontainers.image.version="1.1.0-community" \
+      org.opencontainers.image.licenses="AGPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/ideatofact/sovereigndoc" \
+      org.opencontainers.image.vendor="Idea To Fact LLC"
+
+WORKDIR /app
+
+# Install system dependencies required by PyMuPDF, ONNX Runtime, and document tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Enforce strict zero-telemetry and local cache directories
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    ANONYMIZED_TELEMETRY=False \
+    CHROMA_TELEMETRY_IMPL=none \
+    DO_NOT_TRACK=1 \
+    HF_HUB_DISABLE_TELEMETRY=1 \
+    FASTEMBED_CACHE_PATH=/app/.cache/fastembed \
+    PYTHONPATH=/app:/app/backend
+
+# Install Python dependencies
+COPY backend/requirements.txt /app/backend/requirements.txt
+RUN pip install --no-cache-dir -r /app/backend/requirements.txt
+
+# Pre-bake FastEmbed ONNX models (BGE-small + MS-MARCO Cross-Encoder) at build time
+# so the container runs 100% offline with --network none or air-gapped bridge mode
+RUN SOVEREIGNDOC_ALLOW_MODEL_DOWNLOADS=1 python -c "from fastembed import TextEmbedding; from fastembed.rerank.cross_encoder import TextCrossEncoder; TextEmbedding(model_name='BAAI/bge-small-en-v1.5'); TextCrossEncoder(model_name='Xenova/ms-marco-MiniLM-L-6-v2'); print('Pre-baked ONNX models successfully.')"
+
+# Lock HuggingFace / FastEmbed to offline-only mode after model baking
+ENV HF_HUB_OFFLINE=1
+
+# Copy shared packages, backend source, docs, and static frontend source for air-gap auditing & test suites
+COPY packages /app/packages
+COPY backend /app/backend
+COPY docs /app/docs
+COPY frontend/index.html frontend/package.json /app/frontend/
+COPY frontend/public /app/frontend/public
+COPY frontend/src /app/frontend/src
+COPY LICENSE NOTICE THIRD_PARTY_NOTICES.md DISCLAIMER.md PRIVACY.md SECURITY.md CONTRIBUTING.md CODE_OF_CONDUCT.md CHANGELOG.md README.md /app/
+COPY LICENSE NOTICE THIRD_PARTY_NOTICES.md /usr/local/share/licenses/sovereigndoc/
+COPY Dockerfile.backend Dockerfile.frontend docker-compose.yml run_app.bat run_backend.bat run_frontend.bat test_backend.bat /app/
+
+EXPOSE 8000
+
+# Local healthcheck probing unauthenticated system health API
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/system/health').read()" || exit 1
+
+CMD ["uvicorn", "app.main:app", "--app-dir", "/app/backend", "--host", "0.0.0.0", "--port", "8000"]

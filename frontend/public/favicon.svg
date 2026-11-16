@@ -1,0 +1,8 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Solid High-Contrast Dark Slate Background Tile -->
+  <rect width="64" height="64" rx="14" fill="#0F172A" />
+  <!-- Emerald Sovereign Shield Outer Border -->
+  <path d="M32 8L12 15V28C12 42 21.5 53.5 32 57C42.5 53.5 52 42 52 28V15L32 8Z" fill="#0B0F17" stroke="#10B981" stroke-width="4" stroke-linejoin="round" />
+  <!-- Crisp Geometric "S" Monogram -->
+  <path d="M38 22H28C25.8 22 24 23.8 24 26C24 28.2 25.8 30 28 30H36C38.2 30 40 31.8 40 34C40 36.2 38.2 38 36 38H26" stroke="#06B6D4" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

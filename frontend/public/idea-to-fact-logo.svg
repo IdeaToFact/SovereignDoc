@@ -1,0 +1,9 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Isometric Grounding Cube -->
+  <path d="M18 4L30 11V25L18 32L6 25V11L18 4Z" stroke="#06B6D4" stroke-width="2" stroke-linejoin="round" />
+  <path d="M18 4V32" stroke="#06B6D4" stroke-width="1.5" stroke-dasharray="2 2" />
+  <path d="M6 11L18 18L30 11" stroke="#06B6D4" stroke-width="2" stroke-linejoin="round" />
+  <!-- Fact Verification Checkmark overlay -->
+  <path d="M12 18L16.5 22.5L25 13.5" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
+

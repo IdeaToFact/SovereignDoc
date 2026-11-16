@@ -1,0 +1,48 @@
+# Python Virtual Environment
+.venv/
+venv/
+ENV/
+
+# SovereignDoc Local Storage & Cache
+.sovereigndoc/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment Variables
+.env
+.env.local
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Frontend Build & Node
+node_modules/
+dist/
+
+sovereign_doc.code-workspace
+
+# Internal development milestone plans
+docs/MILESTONE_*_PLAN.md
+docs/milestones/
+docs/MILESTONE_*.md
+docs/SECOND_*.md
+docs/LAUNCH_CHECKLIST.md
+docs/commercial/*
+!docs/commercial/COMMERCIAL_TERMS_FRAMEWORK.md
+docs/internal/
+docs/internal/*
+
+# Historical development milestone test scripts
+backend/test_milestone*.py
+backend/test_knowledge_graph_usability.py
+
+demo_assets/*

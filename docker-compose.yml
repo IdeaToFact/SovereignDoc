@@ -1,0 +1,40 @@
+# SovereignDoc Community Edition (v1.1.0-community) — Official All-in-One Workstation
+# Idea To Fact LLC -> AirGap Axis Platform -> SovereignDoc Community Edition
+#
+# RECOMMENDED DEPLOYMENT: Bring Your Own Ollama (BYOO)
+# ----------------------------------------------------
+# 1. Install Docker Desktop
+# 2. Install Ollama on your Host OS (Windows / macOS / Linux)
+# 3. Pull a local model: `ollama pull llama3.2:3b` (or `qwen2.5`, `mistral`)
+# 4. Launch SovereignDoc: `docker compose up -d`
+# 5. Open SovereignDoc:   http://127.0.0.1:8000
+#
+# NETWORKING NOTE:
+# - Host Loopback Binding (`127.0.0.1:8000:8000`) ensures SovereignDoc is ONLY reachable
+#   from your local workstation and never exposed to LAN/WAN.
+# - Connects to your host's local Ollama runtime via `http://host.docker.internal:11434`.
+
+services:
+  sovereigndoc:
+    image: airgapaxis/sovereigndoc:1.1.0-community
+    container_name: sovereigndoc
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      SOVEREIGNDOC_OLLAMA_URL: http://host.docker.internal:11434
+      SOVEREIGNDOC_HOST: 0.0.0.0
+      SOVEREIGNDOC_PORT: 8000
+      ANONYMIZED_TELEMETRY: "False"
+      CHROMA_TELEMETRY_IMPL: "none"
+      DO_NOT_TRACK: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      HF_HUB_OFFLINE: "1"
+    volumes:
+      - sovereigndoc_data:/root/.sovereigndoc
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  sovereigndoc_data:

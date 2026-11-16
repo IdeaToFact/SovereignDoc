@@ -1,0 +1,24 @@
+{
+  "include": [
+    "app",
+    "test_milestone1.py",
+    "test_milestone2.py",
+    "test_milestone3_backend.py",
+    "test_milestone4.py",
+    "test_milestone4_1.py",
+    "test_milestone5.py",
+    "test_milestone6.py",
+    "verify_airgap.py",
+    "benchmark_hardware.py"
+  ],
+  "exclude": [
+    ".venv",
+    "**/__pycache__"
+  ],
+  "venvPath": ".",
+  "venv": ".venv",
+  "extraPaths": [
+    ".",
+    ".."
+  ]
+}

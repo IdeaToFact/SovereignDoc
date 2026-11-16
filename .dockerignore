@@ -1,0 +1,30 @@
+# Git & IDE
+.git
+.gitignore
+.vscode
+.idea
+
+# Python virtual environments & caches
+**/.venv
+**/venv
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.pytest_cache
+backend/.pytest_cache
+.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+
+# Node modules & build artifacts
+**/node_modules
+frontend/node_modules
+frontend/dist
+
+# Local databases & test vaults
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+.sovereigndoc
+**/.sovereigndoc*
